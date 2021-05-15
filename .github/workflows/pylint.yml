@@ -25,5 +25,5 @@ jobs:
     - name: Lint
       run: |
         flake8 .
-        isort --check-only --diff basicsr/ options/ scripts/ tests/ setup.py
-        yapf -r -d basicsr/ options/ scripts/ tests/ setup.py
+        isort --check-only --diff facexlib/ inference/ scripts/ setup.py
+        yapf -r -d facexlib/ inference/ scripts/ setup.py
