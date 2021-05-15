@@ -1,72 +1,35 @@
-# ProjectTemplate-Python
+# ![icon](assets/icon_small.png) FaceXLib
 
-[English](README.md) **|** [简体中文](README_CN.md) &emsp; [GitHub](https://github.com/xinntao/ProjectTemplate-Python) **|** [Gitee码云](https://gitee.com/xinntao/ProjectTemplate-Python)
+[English](README.md) **|** [简体中文](README_CN.md) &emsp; [GitHub](https://github.com/xinntao/facexlib) **|** [Gitee码云](https://gitee.com/xinntao/facexlib)
 
-## File Modification
+---
 
-1. Setup *pre-commit* hook
-    1. If necessary, modify `.pre-commit-config.yaml`
-    1. In the repository root path, run
-    > pre-commit install
-1. Modify the `.gitignore` file
-1. Modify the `LICENSE` file
-    This repository uses the *MIT* license, you may change it to other licenses
-1. Modify the *setup* files
-    1. `setup.cfg`
-    1. `setup.py`, especially the `basicsr` keyword
-1. Modify the `requirements.txt` files
-1. Modify the `VERSION` file
+`facexlib` is a **pytorch-based** library for **face-related** functions, such as detection, alignment, recognition, tracking, utils for face restorations, *etc*.
+It only provides inference (without training).
+This repo is based current STOA open-source methods (see [more details](#Functions)).
 
-## GitHub Workflows
+## :eyes: Demo
 
-1. [pylint](./github/workflows/pylint.yml)
-1. [gitee-repo-mirror](./github/workflow/gitee-repo-mirror.yml) - Support Gitee码云
-    1. Clone GitHub repo in the [Gitee](https://gitee.com/) website
-    1. Modify [gitee-repo-mirror](./github/workflow/gitee-repo-mirror.yml)
-    1. In Github *Settings* -> *Secrets*, add `SSH_PRIVATE_KEY`
+## :wrench: Dependencies and Installation
 
-## Other Procedures
+- Python >= 3.7 (Recommend to use [Anaconda](https://www.anaconda.com/download/#linux) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html))
+- [PyTorch >= 1.3](https://pytorch.org/)
+- NVIDIA GPU + [CUDA](https://developer.nvidia.com/cuda-downloads)
 
-1. The `description`, `website`, `topics` in the main page
-1. Support Chinese documents, for example, `README_CN.md`
+## :sparkles: Functions
 
-## Emoji
+| Function | Description  | Reference |
+| :--- | :---:        |     :---:      |
+| Detection | ([More details](detection/README.md) | [Pytorch_Retinaface](https://github.com/biubug6/Pytorch_Retinaface) |
+| Alignment | ([More details](alignment/README.md) | [AdaptiveWingLoss](https://github.com/protossw512/AdaptiveWingLoss) |
+| Recognition | ([More details](recognition/README.md) | [InsightFace_Pytorch](https://github.com/TreB1eN/InsightFace_Pytorch) |
+| Tracking | ([More details](tracking/README.md) | [SORT](https://github.com/abewley/sort) |
+| Utils | ([More details](utils/README.md)) | |
 
-[Emoji cheat-sheet](https://github.com/ikatyang/emoji-cheat-sheet)
+## :scroll: License and Acknowledgement
 
-| Emoji | Meaning |
-| :---         |     :---:      |
-| :rocket:   | Used for [BasicSR](https://github.com/xinntao/BasicSR) Logo |
-| :sparkles: | Features |
-| :zap: | HOWTOs |
-| :wrench: | Installation / Usage |
-| :hourglass_flowing_sand: | TODO list |
-| :turtle: | Dataset preparation |
-| :computer: | Commands |
-| :european_castle: | Model zoo |
-| :memo: | Designs |
-| :scroll: | License and acknowledgement |
-| :earth_asia: | Citations |
-| :e-mail: | Contact |
-| :m: | Models |
-| :arrow_double_down: | Download |
-| :file_folder: | Datasets |
-| :chart_with_upwards_trend: | Curves|
-| :eyes: | Screenshot |
-| :books: |References |
+This project is released under the MIT license. <br>
 
-## Useful Image Links
+## :e-mail: Contact
 
-<img src="https://colab.research.google.com/assets/colab-badge.svg" height="28" alt="google colab logo">  Google Colab Logo <br>
-<img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Windows_darkblue_2012.svg" height="28" alt="google colab logo">  Windows Logo <br>
-<img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Logo-ubuntu_no%28r%29-black_orange-hex.svg" alt="Ubuntu" height="24">  Ubuntu Logo <br>
-
-## Other Useful Tips
-
-1. `More` drop-down menu
-    <details>
-    <summary>More</summary>
-    <ul>
-    <li>Nov 19, 2020. Set up ProjectTemplate-Python.</li>
-    </ul>
-    </details>
+If you have any question, open an issue or email `xintao.wang@outlook.com`.
