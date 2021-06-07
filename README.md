@@ -20,11 +20,11 @@ This repo is based current STOA open-source methods (see [more details](#Functio
 
 | Function | Description  | Reference |
 | :--- | :---:        |     :---:      |
-| Detection | ([More details](detection/README.md) | [Pytorch_Retinaface](https://github.com/biubug6/Pytorch_Retinaface) |
-| Alignment | ([More details](alignment/README.md) | [AdaptiveWingLoss](https://github.com/protossw512/AdaptiveWingLoss) |
-| Recognition | ([More details](recognition/README.md) | [InsightFace_Pytorch](https://github.com/TreB1eN/InsightFace_Pytorch) |
-| Tracking | ([More details](tracking/README.md) | [SORT](https://github.com/abewley/sort) |
-| Utils | ([More details](utils/README.md)) | |
+| Detection | [More details](facexlib/detection/README.md) | [Pytorch_Retinaface](https://github.com/biubug6/Pytorch_Retinaface) |
+| Alignment | [More details](facexlib/alignment/README.md) | [AdaptiveWingLoss](https://github.com/protossw512/AdaptiveWingLoss) |
+| Recognition | [More details](facexlib/recognition/README.md) | [InsightFace_Pytorch](https://github.com/TreB1eN/InsightFace_Pytorch) |
+| Tracking | [More details](facexlib/tracking/README.md) | [SORT](https://github.com/abewley/sort) |
+| Utils | [More details](facexlib/utils/README.md)) | |
 
 ## :scroll: License and Acknowledgement
 

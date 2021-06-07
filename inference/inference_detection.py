@@ -20,7 +20,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--img_path', type=str)
+    parser.add_argument('--img_path', type=str, default='assets/test.jpg')
     parser.add_argument('--save_path', type=str, default='test_detection.png')
     parser.add_argument(
         '--model_name', type=str, default='retinaface_resnet50', help='retinaface_resnet50 | retinaface_mobile0.25')
