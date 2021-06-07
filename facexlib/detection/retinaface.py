@@ -1,11 +1,8 @@
 import cv2
 import numpy as np
-import os
-import os.path as osp
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from copy import deepcopy
 from PIL import Image
 from torchvision.models._utils import IntermediateLayerGetter as IntermediateLayerGetter
 
@@ -18,7 +15,6 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 
 def generate_config(network_name):
-    weights_dir = osp.join(os.path.dirname(__file__), 'weights')
 
     cfg_mnet = {
         'name': 'mobilenet0.25',
@@ -34,8 +30,6 @@ def generate_config(network_name):
         'decay1': 190,
         'decay2': 220,
         'image_size': 640,
-        'pretrain': True,
-        'pretrain_path': osp.join(weights_dir, 'mobilenet0.25_Final.pth'),
         'return_layers': {
             'stage1': 1,
             'stage2': 2,
@@ -59,8 +53,6 @@ def generate_config(network_name):
         'decay1': 70,
         'decay2': 90,
         'image_size': 840,
-        'pretrain': True,
-        'pretrain_path': osp.join(weights_dir, 'Resnet50_Final.pth'),
         'return_layers': {
             'layer2': 1,
             'layer3': 2,
@@ -119,17 +111,6 @@ class RetinaFace(nn.Module):
         self.ClassHead = make_class_head(fpn_num=3, inchannels=cfg['out_channel'])
         self.BboxHead = make_bbox_head(fpn_num=3, inchannels=cfg['out_channel'])
         self.LandmarkHead = make_landmark_head(fpn_num=3, inchannels=cfg['out_channel'])
-
-        # Load weights.
-        if cfg['pretrain']:
-
-            load_net = torch.load(cfg['pretrain_path'], map_location=lambda storage, loc: storage)
-            # remove unnecessary 'module.'
-            for k, v in deepcopy(load_net).items():
-                if k.startswith('module.'):
-                    load_net[k[7:]] = v
-                    load_net.pop(k)
-            self.load_state_dict(load_net, strict=True)
 
         self.to(device)
         self.eval()

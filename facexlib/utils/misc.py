@@ -1,6 +1,8 @@
 import cv2
 import os
 import torch
+from torch.hub import download_url_to_file, get_dir
+from urllib.parse import urlparse
 
 
 def imwrite(img, file_path, params=None, auto_mkdir=True):
@@ -49,3 +51,23 @@ def img2tensor(imgs, bgr2rgb=True, float32=True):
         return [_totensor(img, bgr2rgb, float32) for img in imgs]
     else:
         return _totensor(imgs, bgr2rgb, float32)
+
+
+def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
+    """Ref:https://github.com/1adrianb/face-alignment/blob/master/face_alignment/utils.py
+    """
+    if model_dir is None:
+        hub_dir = get_dir()
+        model_dir = os.path.join(hub_dir, 'checkpoints')
+
+    os.makedirs(model_dir, exist_ok=True)
+
+    parts = urlparse(url)
+    filename = os.path.basename(parts.path)
+    if file_name is not None:
+        filename = file_name
+    cached_file = os.path.join(model_dir, filename)
+    if not os.path.exists(cached_file):
+        print(f'Downloading: "{url}" to {cached_file}\n')
+        download_url_to_file(url, cached_file, hash_prefix=None, progress=progress)
+    return cached_file
