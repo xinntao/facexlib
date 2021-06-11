@@ -24,7 +24,7 @@ This repo is based current STOA open-source methods (see [more details](#Functio
 | Alignment | [More details](facexlib/alignment/README.md) | [AdaptiveWingLoss](https://github.com/protossw512/AdaptiveWingLoss) |
 | Recognition | [More details](facexlib/recognition/README.md) | [InsightFace_Pytorch](https://github.com/TreB1eN/InsightFace_Pytorch) |
 | Tracking | [More details](facexlib/tracking/README.md) | [SORT](https://github.com/abewley/sort) |
-| Utils | [More details](facexlib/utils/README.md)) | |
+| Utils | [More details](facexlib/utils/README.md) | |
 
 ## :scroll: License and Acknowledgement
 

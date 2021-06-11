@@ -17,8 +17,6 @@ def main(args):
             landmarks = landmark_98_to_68(landmarks)
         visualize_alignment(img, [landmarks], args.save_path)
 
-    # pred_68 = landmark_98_to_68(pred)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
