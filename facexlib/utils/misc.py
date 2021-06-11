@@ -4,6 +4,8 @@ import torch
 from torch.hub import download_url_to_file, get_dir
 from urllib.parse import urlparse
 
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 def imwrite(img, file_path, params=None, auto_mkdir=True):
     """Write image to file.
@@ -66,7 +68,7 @@ def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
     filename = os.path.basename(parts.path)
     if file_name is not None:
         filename = file_name
-    cached_file = os.path.join(model_dir, filename)
+    cached_file = os.path.abspath(os.path.join(ROOT_DIR, model_dir, filename))
     if not os.path.exists(cached_file):
         print(f'Downloading: "{url}" to {cached_file}\n')
         download_url_to_file(url, cached_file, hash_prefix=None, progress=progress)
