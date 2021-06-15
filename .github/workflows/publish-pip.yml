@@ -25,7 +25,7 @@ jobs:
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Build for distribution
-        run: python setup.py sdist bdist_wheel
+        run: python setup.py sdist
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:

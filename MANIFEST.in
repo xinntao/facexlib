@@ -1,0 +1,6 @@
+include assets/*.png
+include assets/*.jpg
+include inference/*.py
+include scripts/*.py
+include VERSION
+include requirements.txt
