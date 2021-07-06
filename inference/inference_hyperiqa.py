@@ -34,9 +34,9 @@ def main(args):
     with torch.no_grad():
         bboxes = det_net.detect_faces(img, 0.97)
         box = list(map(int, bboxes[0]))
-        # BGR -> RGB
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         pred_scores = []
+        # BRG -> RGB
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         for i in range(10):
             detect_face = img[box[1]:box[3], box[0]:box[2], :]
             detect_face = Image.fromarray(detect_face)
