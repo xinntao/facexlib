@@ -1,4 +1,3 @@
-import math
 import torch as torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -74,11 +73,6 @@ class HyperNet(nn.Module):
 
         self.fc5w_fc = nn.Linear(self.hyperInChn, self.f4)
         self.fc5b_fc = nn.Linear(self.hyperInChn, 1)
-
-        # initialize
-        for i, m_name in enumerate(self._modules):
-            if i > 2:
-                nn.init.kaiming_normal_(self._modules[m_name].weight.data)
 
     def forward(self, img):
         feature_size = self.feature_size
@@ -196,23 +190,6 @@ class ResNetBackbone(nn.Module):
 
         self.lda4_pool = nn.AvgPool2d(7, stride=7)
         self.lda4_fc = nn.Linear(2048, in_chn - lda_out_channels * 3)
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
-            elif isinstance(m, nn.BatchNorm2d):
-                m.weight.data.fill_(1)
-                m.bias.data.zero_()
-
-        # initialize
-        nn.init.kaiming_normal_(self.lda1_pool._modules['0'].weight.data)
-        nn.init.kaiming_normal_(self.lda2_pool._modules['0'].weight.data)
-        nn.init.kaiming_normal_(self.lda3_pool._modules['0'].weight.data)
-        nn.init.kaiming_normal_(self.lda1_fc.weight.data)
-        nn.init.kaiming_normal_(self.lda2_fc.weight.data)
-        nn.init.kaiming_normal_(self.lda3_fc.weight.data)
-        nn.init.kaiming_normal_(self.lda4_fc.weight.data)
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
