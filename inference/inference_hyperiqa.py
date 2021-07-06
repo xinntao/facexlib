@@ -28,13 +28,16 @@ def main(args):
         torchvision.transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
     ])
 
-    img = cv2.imread(args.img_path)[:, :, [2, 1, 0]]
+    img = cv2.imread(args.img_path)
     img_name = os.path.basename(args.img_path)
     basename, _ = os.path.splitext(img_name)
     with torch.no_grad():
         bboxes = det_net.detect_faces(img, 0.97)
         box = list(map(int, bboxes[0]))
         pred_scores = []
+        # BRG -> RGB
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
         for i in range(10):
             detect_face = img[box[1]:box[3], box[0]:box[2], :]
             detect_face = Image.fromarray(detect_face)
