@@ -4,6 +4,26 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 
+class HyperIQA(nn.Module):
+    """
+    Combine the hypernet and target network within a network.
+    """
+
+    def __init__(self, *args):
+        super(HyperIQA, self).__init__()
+        self.hypernet = HyperNet(*args)
+
+    def forward(self, img):
+        net_params = self.hypernet(img)
+        # build the target network
+        target_net = TargetNet(net_params)
+        for param in target_net.parameters():
+            param.requires_grad = False
+        # predict the face quality
+        pred = target_net(net_params['target_in_vec'])
+        return pred
+
+
 class HyperNet(nn.Module):
     """
     Hyper network for learning perceptual rules.

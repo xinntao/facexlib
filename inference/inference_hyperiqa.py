@@ -7,7 +7,6 @@ import torchvision
 from PIL import Image
 
 from facexlib.assessment import init_assessment_model
-from facexlib.assessment.hyperiqa_net import TargetNet as TargetNet
 from facexlib.detection import init_detection_model
 
 
@@ -19,7 +18,7 @@ def main(args):
     """
     # initialize model
     det_net = init_detection_model(args.detection_model_name, half=False)
-    hyper_net = init_assessment_model(args.assess_model_name, half=False)
+    assess_net = init_assessment_model(args.assess_model_name, half=False)
 
     # specified face transformation in original hyperIQA
     transforms = torchvision.transforms.Compose([
@@ -42,20 +41,22 @@ def main(args):
 
             detect_face = transforms(detect_face)
             detect_face = torch.tensor(detect_face.cuda()).unsqueeze(0)
-            # params contain the network weights conveyed to target network
-            net_params = hyper_net(detect_face)
 
-            # build target network
-            target_net = TargetNet(net_params).cuda()
-            for param in target_net.parameters():
-                param.requires_grad = False
+            pred = assess_net(detect_face)
+            # # params contain the network weights conveyed to target network
+            # net_params = hyper_net(detect_face)
 
-            # predict the face quality
-            pred = target_net(net_params['target_in_vec'])
+            # # build target network
+            # target_net = TargetNet(net_params).cuda()
+            # for param in target_net.parameters():
+            #     param.requires_grad = False
+
+            # # predict the face quality
+            # pred = target_net(net_params['target_in_vec'])
             pred_scores.append(float(pred.item()))
         score = np.mean(pred_scores)
         # quality score ranges from 0-100, a higher score indicates a better quality
-        print(f'{basename}' ': %.2f' % score)
+        print(f'{basename} {score:.4f}')
 
 
 if __name__ == '__main__':
