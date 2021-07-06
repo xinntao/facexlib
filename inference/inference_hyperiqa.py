@@ -43,16 +43,6 @@ def main(args):
             detect_face = torch.tensor(detect_face.cuda()).unsqueeze(0)
 
             pred = assess_net(detect_face)
-            # # params contain the network weights conveyed to target network
-            # net_params = hyper_net(detect_face)
-
-            # # build target network
-            # target_net = TargetNet(net_params).cuda()
-            # for param in target_net.parameters():
-            #     param.requires_grad = False
-
-            # # predict the face quality
-            # pred = target_net(net_params['target_in_vec'])
             pred_scores.append(float(pred.item()))
         score = np.mean(pred_scores)
         # quality score ranges from 0-100, a higher score indicates a better quality
