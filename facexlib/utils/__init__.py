@@ -1,7 +1,7 @@
 from .face_utils import align_crop_face_landmarks, compute_increased_bbox, get_valid_bboxes, paste_face_back
-from .misc import load_file_from_url, scandir
+from .misc import img2tensor, load_file_from_url, scandir
 
 __all__ = [
     'align_crop_face_landmarks', 'compute_increased_bbox', 'get_valid_bboxes', 'load_file_from_url', 'paste_face_back',
-    'scandir'
+    'img2tensor', 'scandir'
 ]
