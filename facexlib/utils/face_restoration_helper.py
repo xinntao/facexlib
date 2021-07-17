@@ -74,8 +74,8 @@ class FaceRestoreHelper(object):
             self.face_template[:, 0] += face_size * (self.crop_ratio[1] - 1) / 2
         self.save_ext = save_ext
         self.pad_blur = pad_blur
-        assert self.template_3points is False and self.pad_blur is True, (
-            'template_3points should be False when pad_blur is True')
+        if self.pad_blur is True:
+            self.template_3points = False
 
         self.all_landmarks_5 = []
         self.det_faces = []
@@ -101,13 +101,14 @@ class FaceRestoreHelper(object):
     def get_face_landmarks_5(self, only_keep_largest=False, only_center_face=False, resize=None, blur_ratio=0.01):
         if resize is None:
             scale = 1
+            input_img = self.input_img
         else:
             h, w = self.input_img.shape[0:2]
             scale = min(h, w) / resize
             h, w = int(h / scale), int(w / scale)
-            img_resize = cv2.resize(self.input_img, (w, h), cv2.INTER_LANCZOS4)
+            input_img = cv2.resize(self.input_img, (w, h), cv2.INTER_LANCZOS4)
         with torch.no_grad():
-            bboxes = self.face_det.detect_faces(img_resize, 0.97) * scale
+            bboxes = self.face_det.detect_faces(input_img, 0.97) * scale
         for bbox in bboxes:
             if self.template_3points:
                 landmark = np.array([[bbox[i], bbox[i + 1]] for i in range(5, 11, 2)])
@@ -144,7 +145,7 @@ class FaceRestoreHelper(object):
                 #  - np.flipud(eye_to_mouth) * [-1, 1]: rotate 90 clockwise
                 # norm with the hypotenuse: get the direction
                 x /= np.hypot(*x)  # get the hypotenuse of a right triangle
-                rect_scale = 1
+                rect_scale = 1.5
                 x *= max(np.hypot(*eye_to_eye) * 2.0 * rect_scale, np.hypot(*eye_to_mouth) * 1.8 * rect_scale)
                 # y: half height of the oriented crop rectangle
                 y = np.flipud(x) * [-1, 1]
