@@ -83,6 +83,7 @@ class FaceRestoreHelper(object):
         self.inverse_affine_matrices = []
         self.cropped_faces = []
         self.restored_faces = []
+        self.pad_input_imgs = []
 
         # init face detection model
         self.face_det = init_detection_model(det_model, half=False)
@@ -202,7 +203,8 @@ class FaceRestoreHelper(object):
         """Align and warp faces with face template.
         """
         if self.pad_blur:
-            assert len(self.pad_input_imgs) == len(self.all_landmarks_5), 'Mismatched samples'
+            assert len(self.pad_input_imgs) == len(
+                self.all_landmarks_5), f'Mismatched samples: {len(self.pad_input_imgs)} and {len(self.all_landmarks_5)}'
         for idx, landmark in enumerate(self.all_landmarks_5):
             # use 5 landmarks to get affine matrix
             affine_matrix = cv2.estimateAffinePartial2D(landmark, self.face_template)[0]
@@ -280,3 +282,4 @@ class FaceRestoreHelper(object):
         self.cropped_faces = []
         self.inverse_affine_matrices = []
         self.det_faces = []
+        self.pad_input_imgs = []

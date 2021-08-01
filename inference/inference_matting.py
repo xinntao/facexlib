@@ -23,7 +23,7 @@ def main(args):
 
     img_t = img2tensor(img, bgr2rgb=True, float32=True)
     normalize(img_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
-    img_t.unsqueeze_(0)
+    img_t = img_t.unsqueeze(0).cuda()
 
     # resize image for input
     _, _, im_h, im_w = img_t.shape
@@ -43,7 +43,7 @@ def main(args):
     img_t = F.interpolate(img_t, size=(im_rh, im_rw), mode='area')
 
     # inference
-    _, _, matte = modnet(img_t.cuda(), True)
+    _, _, matte = modnet(img_t, True)
 
     # resize and save matte
     matte = F.interpolate(matte, size=(im_h, im_w), mode='area')
