@@ -81,7 +81,8 @@ class FaceRestoreHelper(object):
         self.restored_faces = []
 
         # init face detection model
-        self.face_det = init_detection_model(det_model, half=False)
+        device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        self.face_det = init_detection_model(det_model, half=False, device=device)
 
     def set_upscale_factor(self, upscale_factor):
         self.upscale_factor = upscale_factor
