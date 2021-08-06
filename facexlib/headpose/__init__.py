@@ -7,7 +7,7 @@ from .hopenet_arch import HopeNet
 def init_headpose_model(model_name, half=False, device='cuda'):
     if model_name == 'hopenet':
         model = HopeNet('resnet', [3, 4, 6, 3], 66)
-        model_url = 'https://github.com/xinntao/facexlib/releases/download/v0.1.0/headpose_hopenet.pth'
+        model_url = 'https://github.com/xinntao/facexlib/releases/download/v0.2.0/headpose_hopenet.pth'
     else:
         raise NotImplementedError(f'{model_name} is not implemented.')
 

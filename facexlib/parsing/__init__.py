@@ -7,7 +7,7 @@ from .bisenet import BiSeNet
 def init_parsing_model(model_name='bisenet', half=False, device='cuda'):
     if model_name == 'bisenet':
         model = BiSeNet(num_class=19)
-        model_url = 'https://github.com/xinntao/facexlib/releases/download/v0.1.0/parsing_bisenet.pth'
+        model_url = 'https://github.com/xinntao/facexlib/releases/download/v0.2.0/parsing_bisenet.pth'
     else:
         raise NotImplementedError(f'{model_name} is not implemented.')
 

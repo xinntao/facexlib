@@ -7,7 +7,7 @@ from .hyperiqa_net import HyperIQA
 def init_assessment_model(model_name, half=False, device='cuda'):
     if model_name == 'hypernet':
         model = HyperIQA(16, 112, 224, 112, 56, 28, 14, 7)
-        model_url = 'https://github.com/xinntao/facexlib/releases/download/v0.1.0/assessment_hyperIQA.pth'
+        model_url = 'https://github.com/xinntao/facexlib/releases/download/v0.2.0/assessment_hyperIQA.pth'
     else:
         raise NotImplementedError(f'{model_name} is not implemented.')
 
