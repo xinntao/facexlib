@@ -63,7 +63,7 @@ def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
         hub_dir = get_dir()
         model_dir = os.path.join(hub_dir, 'checkpoints')
 
-    os.makedirs(model_dir, exist_ok=True)
+    os.makedirs(os.path.join(ROOT_DIR, model_dir), exist_ok=True)
 
     parts = urlparse(url)
     filename = os.path.basename(parts.path)

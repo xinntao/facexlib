@@ -53,7 +53,8 @@ class FaceRestoreHelper(object):
                  det_model='retinaface_resnet50',
                  save_ext='png',
                  template_3points=True,
-                 pad_blur=False):
+                 pad_blur=False,
+                 device=None):
         self.template_3points = template_3points  # improve robustness
         self.upscale_factor = upscale_factor
         # the cropped face ratio based on the square face
@@ -85,8 +86,12 @@ class FaceRestoreHelper(object):
         self.restored_faces = []
         self.pad_input_imgs = []
 
+        if device is None:
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        else:
+            device = device
+
         # init face detection model
-        device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
         self.face_det = init_detection_model(det_model, half=False, device=device)
 
     def set_upscale_factor(self, upscale_factor):
