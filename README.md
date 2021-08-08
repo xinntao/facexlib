@@ -40,14 +40,14 @@ Note that we just provide a collection of these algorithms. You need to refer to
 
 ### Installation
 
-    ```bash
-    pip install facexlib
-    ```
+```bash
+pip install facexlib
+```
 
 ### Pre-trained models
 
-It will automatically download pre-trained models at the first inference. <br>
-If your network is not stable, you can download in advance (may with other download tools), and put them in `PACKAGE_ROOT_PATH/facexlib/weights`.
+It will **automatically** download pre-trained models at the first inference. <br>
+If your network is not stable, you can download in advance (may with other download tools), and put them in the folder: `PACKAGE_ROOT_PATH/facexlib/weights`.
 
 ## :scroll: License and Acknowledgement
 
