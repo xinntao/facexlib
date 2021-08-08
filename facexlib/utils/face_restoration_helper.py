@@ -250,11 +250,16 @@ class FaceRestoreHelper(object):
     def add_restored_face(self, face):
         self.restored_faces.append(face)
 
-    def paste_faces_to_input_image(self, save_path=None):
+    def paste_faces_to_input_image(self, save_path=None, upsample_img=None):
         h, w, _ = self.input_img.shape
-        h_up, w_up = h * self.upscale_factor, w * self.upscale_factor
-        # simply resize the background
-        upsample_img = cv2.resize(self.input_img, (w_up, h_up))
+        h_up, w_up = int(h * self.upscale_factor), (w * self.upscale_factor)
+
+        if upsample_img is None:
+            # simply resize the background
+            upsample_img = cv2.resize(self.input_img, (w_up, h_up), interpolation=cv2.INTER_LANCZOS4)
+        else:
+            upsample_img = cv2.resize(upsample_img, (w_up, h_up), interpolation=cv2.INTER_LANCZOS4)
+
         assert len(self.restored_faces) == len(
             self.inverse_affine_matrices), ('length of restored_faces and affine_matrices are different.')
         for restored_face, inverse_affine in zip(self.restored_faces, self.inverse_affine_matrices):
