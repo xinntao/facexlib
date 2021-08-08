@@ -1,4 +1,3 @@
-# https://github.com/xinntao/BasicSR
 # flake8: noqa
 from .alignment import *
 from .detection import *
