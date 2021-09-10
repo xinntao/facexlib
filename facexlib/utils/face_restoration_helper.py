@@ -281,6 +281,12 @@ class FaceRestoreHelper(object):
         assert len(self.restored_faces) == len(
             self.inverse_affine_matrices), ('length of restored_faces and affine_matrices are different.')
         for restored_face, inverse_affine in zip(self.restored_faces, self.inverse_affine_matrices):
+            # Add an offset to inverse affine matrix, for more precise back alignment
+            if self.upscale_factor > 1:
+                extra_offset = 0.5 * self.upscale_factor
+            else:
+                extra_offset = 0
+            inverse_affine[:, 2] += extra_offset
             inv_restored = cv2.warpAffine(restored_face, inverse_affine, (w_up, h_up))
             mask = np.ones(self.face_size, dtype=np.float32)
             inv_mask = cv2.warpAffine(mask, inverse_affine, (w_up, h_up))
