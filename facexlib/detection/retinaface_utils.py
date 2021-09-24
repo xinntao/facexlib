@@ -39,7 +39,9 @@ class PriorBox(object):
 def py_cpu_nms(dets, thresh):
     """Pure Python NMS baseline."""
     keep = torchvision.ops.nms(
-        boxes=dets[:, :4], scores=dets[:, 4], iou_threshold=thresh
+        boxes=torch.Tensor(dets[:, :4]),
+        scores=torch.Tensor(dets[:, 4]),
+        iou_threshold=thresh,
     )
 
     return keep
