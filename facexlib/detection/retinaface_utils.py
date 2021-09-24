@@ -44,7 +44,7 @@ def py_cpu_nms(dets, thresh):
         iou_threshold=thresh,
     )
 
-    return keep
+    return list(keep)
 
 
 def point_form(boxes):
