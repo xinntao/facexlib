@@ -42,7 +42,7 @@ class KalmanBoxTracker(object):
         # define constant velocity model
         # TODO: x: what is the meanning of x[4:7], v?
         self.kf = KalmanFilter(dim_x=7, dim_z=4)
-        # F (dim_x, dim_x): state transistion matrix
+        # F (dim_x, dim_x): state transition matrix
         self.kf.F = np.array([[1, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 1, 0], [0, 0, 1, 0, 0, 0,
                                                                              1], [0, 0, 0, 1, 0, 0, 0],
                               [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 0, 0, 0, 1]])

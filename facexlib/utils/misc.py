@@ -87,7 +87,7 @@ def scandir(dir_path, suffix=None, recursive=False, full_path=False):
         full_path (bool, optional): If set to True, include the dir_path.
             Default: False.
     Returns:
-        A generator for all the interested files with relative pathes.
+        A generator for all the interested files with relative paths.
     """
 
     if (suffix is not None) and not isinstance(suffix, (str, tuple)):

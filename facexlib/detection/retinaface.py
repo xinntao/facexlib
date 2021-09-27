@@ -84,7 +84,7 @@ class RetinaFace(nn.Module):
         self.target_size, self.max_size = 1600, 2150
         self.resize, self.scale, self.scale1 = 1., None, None
         self.mean_tensor = torch.tensor([[[[104.]], [[117.]], [[123.]]]]).to(device)
-        self.refrence = get_reference_facial_points(default_square=True)
+        self.reference = get_reference_facial_points(default_square=True)
         # Build network.
         backbone = None
         if cfg['name'] == 'mobilenet0.25':
@@ -245,7 +245,7 @@ class RetinaFace(nn.Module):
         for landmark in landmarks:
             facial5points = [[landmark[2 * j], landmark[2 * j + 1]] for j in range(5)]
 
-            warped_face = warp_and_crop_face(np.array(image), facial5points, self.refrence, crop_size=(112, 112))
+            warped_face = warp_and_crop_face(np.array(image), facial5points, self.reference, crop_size=(112, 112))
             faces.append(warped_face)
 
         return np.concatenate((boxes, landmarks), axis=1), faces
