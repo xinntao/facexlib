@@ -125,7 +125,7 @@ class FaceRestoreHelper(object):
             h, w = self.input_img.shape[0:2]
             scale = min(h, w) / resize
             h, w = int(h / scale), int(w / scale)
-            input_img = cv2.resize(self.input_img, (w, h), cv2.INTER_LANCZOS4)
+            input_img = cv2.resize(self.input_img, (w, h), interpolation=cv2.INTER_LANCZOS4)
 
         with torch.no_grad():
             bboxes = self.face_det.detect_faces(input_img, 0.97) * scale
