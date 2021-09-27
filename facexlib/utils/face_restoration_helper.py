@@ -117,7 +117,7 @@ class FaceRestoreHelper(object):
                              only_center_face=False,
                              resize=None,
                              blur_ratio=0.01,
-                             eye_dist_threshold=10):
+                             eye_dist_threshold=None):
         if resize is None:
             scale = 1
             input_img = self.input_img
