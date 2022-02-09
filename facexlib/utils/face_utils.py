@@ -164,7 +164,9 @@ def align_crop_face_landmarks(img,
     h_ratio = shrink_ratio[0] / shrink_ratio[1]
     dst_h, dst_w = int(transform_size * h_ratio), transform_size
     template = np.array([[0, 0], [0, dst_h], [dst_w, dst_h], [dst_w, 0]])
-    affine_matrix = cv2.estimateAffinePartial2D(quad, template)[0]
+    # use cv2.LMEDS method for the equivalence to skimage transform
+    # ref: https://blog.csdn.net/yichxi/article/details/115827338
+    affine_matrix = cv2.estimateAffinePartial2D(quad, template, method=cv2.LMEDS)[0]
     cropped_face = cv2.warpAffine(
         img, affine_matrix, (dst_w, dst_h), borderMode=cv2.BORDER_CONSTANT, borderValue=(135, 133, 132))  # gray
 
@@ -175,8 +177,10 @@ def align_crop_face_landmarks(img,
     if return_inverse_affine:
         dst_h, dst_w = int(output_size * h_ratio), output_size
         template = np.array([[0, 0], [0, dst_h], [dst_w, dst_h], [dst_w, 0]])
-        affine_matrix = cv2.estimateAffinePartial2D(quad_ori,
-                                                    np.array([[0, 0], [0, output_size], [dst_w, dst_h], [dst_w, 0]]))[0]
+        # use cv2.LMEDS method for the equivalence to skimage transform
+        # ref: https://blog.csdn.net/yichxi/article/details/115827338
+        affine_matrix = cv2.estimateAffinePartial2D(
+            quad_ori, np.array([[0, 0], [0, output_size], [dst_w, dst_h], [dst_w, 0]]), method=cv2.LMEDS)[0]
         inverse_affine = cv2.invertAffineTransform(affine_matrix)
     else:
         inverse_affine = None

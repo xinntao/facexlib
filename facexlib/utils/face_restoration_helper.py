@@ -231,7 +231,9 @@ class FaceRestoreHelper(object):
                 self.all_landmarks_5), f'Mismatched samples: {len(self.pad_input_imgs)} and {len(self.all_landmarks_5)}'
         for idx, landmark in enumerate(self.all_landmarks_5):
             # use 5 landmarks to get affine matrix
-            affine_matrix = cv2.estimateAffinePartial2D(landmark, self.face_template)[0]
+            # use cv2.LMEDS method for the equivalence to skimage transform
+            # ref: https://blog.csdn.net/yichxi/article/details/115827338
+            affine_matrix = cv2.estimateAffinePartial2D(landmark, self.face_template, method=cv2.LMEDS)[0]
             self.affine_matrices.append(affine_matrix)
             # warp and crop faces
             if border_mode == 'constant':
