@@ -52,7 +52,7 @@ class FaceRestoreHelper(object):
                  crop_ratio=(1, 1),
                  det_model='retinaface_resnet50',
                  save_ext='png',
-                 template_3points=True,
+                 template_3points=False,
                  pad_blur=False,
                  device=None):
         self.template_3points = template_3points  # improve robustness
