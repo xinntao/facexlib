@@ -81,7 +81,7 @@ def get_reference_facial_points(output_size=None, inner_padding_factor=0.0, oute
             (1 + inner_padding_factor * 2).astype(np.int32)
         output_size += np.array(outer_padding)
     if not (outer_padding[0] < output_size[0] and outer_padding[1] < output_size[1]):
-        raise FaceWarpException('Not (outer_padding[0] < output_size[0]' 'and outer_padding[1] < output_size[1])')
+        raise FaceWarpException('Not (outer_padding[0] < output_size[0] and outer_padding[1] < output_size[1])')
 
     # 1) pad the inner region according inner_padding_factor
     if inner_padding_factor > 0:
