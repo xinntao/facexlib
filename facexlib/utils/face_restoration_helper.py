@@ -90,16 +90,16 @@ class FaceRestoreHelper(object):
         self.pad_input_imgs = []
 
         if device is None:
-            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         else:
-            device = device
+            self.device = device
 
         # init face detection model
-        self.face_det = init_detection_model(det_model, half=False, device=device)
+        self.face_det = init_detection_model(det_model, half=False, device=self.device)
 
         # init face parsing model
         self.use_parse = use_parse
-        self.face_parse = init_parsing_model(model_name='parsenet', device=device)
+        self.face_parse = init_parsing_model(model_name='parsenet', device=self.device)
 
     def set_upscale_factor(self, upscale_factor):
         self.upscale_factor = upscale_factor
@@ -303,7 +303,7 @@ class FaceRestoreHelper(object):
                 face_input = cv2.resize(restored_face, (512, 512), interpolation=cv2.INTER_LINEAR)
                 face_input = img2tensor(face_input.astype('float32') / 255., bgr2rgb=True, float32=True)
                 normalize(face_input, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
-                face_input = torch.unsqueeze(face_input, 0).cuda()
+                face_input = torch.unsqueeze(face_input, 0).to(self.device)
                 with torch.no_grad():
                     out = self.face_parse(face_input)[0]
                 out = out.argmax(dim=1).squeeze().cpu().numpy()
