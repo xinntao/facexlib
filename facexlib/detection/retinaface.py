@@ -11,8 +11,6 @@ from facexlib.detection.retinaface_net import FPN, SSH, MobileNetV1, make_bbox_h
 from facexlib.detection.retinaface_utils import (PriorBox, batched_decode, batched_decode_landm, decode, decode_landm,
                                                  py_cpu_nms)
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 
 def generate_config(network_name):
 
@@ -72,7 +70,9 @@ def generate_config(network_name):
 
 class RetinaFace(nn.Module):
 
-    def __init__(self, network_name='resnet50', half=False, phase='test'):
+    def __init__(self, network_name='resnet50', half=False, phase='test', device=None):
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if device is None else device
+
         super(RetinaFace, self).__init__()
         self.half_inference = half
         cfg = generate_config(network_name)
@@ -83,7 +83,7 @@ class RetinaFace(nn.Module):
         self.phase = phase
         self.target_size, self.max_size = 1600, 2150
         self.resize, self.scale, self.scale1 = 1., None, None
-        self.mean_tensor = torch.tensor([[[[104.]], [[117.]], [[123.]]]]).to(device)
+        self.mean_tensor = torch.tensor([[[[104.]], [[117.]], [[123.]]]], device=self.device)
         self.reference = get_reference_facial_points(default_square=True)
         # Build network.
         backbone = None
@@ -112,7 +112,7 @@ class RetinaFace(nn.Module):
         self.BboxHead = make_bbox_head(fpn_num=3, inchannels=cfg['out_channel'])
         self.LandmarkHead = make_landmark_head(fpn_num=3, inchannels=cfg['out_channel'])
 
-        self.to(device)
+        self.to(self.device)
         self.eval()
         if self.half_inference:
             self.half()
@@ -145,19 +145,19 @@ class RetinaFace(nn.Module):
     def __detect_faces(self, inputs):
         # get scale
         height, width = inputs.shape[2:]
-        self.scale = torch.tensor([width, height, width, height], dtype=torch.float32).to(device)
+        self.scale = torch.tensor([width, height, width, height], dtype=torch.float32, device=self.device)
         tmp = [width, height, width, height, width, height, width, height, width, height]
-        self.scale1 = torch.tensor(tmp, dtype=torch.float32).to(device)
+        self.scale1 = torch.tensor(tmp, dtype=torch.float32, device=self.device)
 
         # forawrd
-        inputs = inputs.to(device)
+        inputs = inputs.to(self.device)
         if self.half_inference:
             inputs = inputs.half()
         loc, conf, landmarks = self(inputs)
 
         # get priorbox
         priorbox = PriorBox(self.cfg, image_size=inputs.shape[2:])
-        priors = priorbox.forward().to(device)
+        priors = priorbox.forward().to(self.device)
 
         return loc, conf, landmarks, priors
 
@@ -197,7 +197,7 @@ class RetinaFace(nn.Module):
         use_origin_size=True,
     ):
         image, self.resize = self.transform(image, use_origin_size)
-        image = image.to(device)
+        image = image.to(self.device)
         if self.half_inference:
             image = image.half()
         image = image - self.mean_tensor
@@ -316,7 +316,7 @@ class RetinaFace(nn.Module):
         """
         # self.t['forward_pass'].tic()
         frames, self.resize = self.batched_transform(frames, use_origin_size)
-        frames = frames.to(device)
+        frames = frames.to(self.device)
         frames = frames - self.mean_tensor
 
         b_loc, b_conf, b_landmarks, priors = self.__detect_faces(frames)
