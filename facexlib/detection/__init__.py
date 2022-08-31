@@ -5,7 +5,7 @@ from facexlib.utils import load_file_from_url
 from .retinaface import RetinaFace
 
 
-def init_detection_model(model_name, half=False, device='cuda'):
+def init_detection_model(model_name, half=False, device='cuda', model_rootpath=None):
     if model_name == 'retinaface_resnet50':
         model = RetinaFace(network_name='resnet50', half=half)
         model_url = 'https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth'
@@ -15,7 +15,9 @@ def init_detection_model(model_name, half=False, device='cuda'):
     else:
         raise NotImplementedError(f'{model_name} is not implemented.')
 
-    model_path = load_file_from_url(url=model_url, model_dir='facexlib/weights', progress=True, file_name=None)
+    model_path = load_file_from_url(
+        url=model_url, model_dir='facexlib/weights', progress=True, file_name=None, save_dir=model_rootpath)
+
     # TODO: clean pretrained model
     load_net = torch.load(model_path, map_location=lambda storage, loc: storage)
     # remove unnecessary 'module.'
