@@ -18,7 +18,7 @@ def draw_axis(img, yaw, pitch, roll, tdx=None, tdy=None, size=100):
     # X axis pointing to right, drawn in red
     x1 = size * (cos(yaw) * cos(roll)) + tdx
     y1 = size * (cos(pitch) * sin(roll) + cos(roll) * sin(pitch) * sin(yaw)) + tdy
-    # Y axis poiting downside, drawn in green
+    # Y axis pointing downside, drawn in green
     x2 = size * (-cos(yaw) * sin(roll)) + tdx
     y2 = size * (cos(pitch) * cos(roll) - sin(pitch) * sin(yaw) * sin(roll)) + tdy
     # Z axis, out of the screen, drawn in blue
