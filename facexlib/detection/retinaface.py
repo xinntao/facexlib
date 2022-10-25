@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from PIL import Image
 from torchvision.models._utils import IntermediateLayerGetter as IntermediateLayerGetter
+from torchvision.ops import batched_nms
 
 from facexlib.detection.align_trans import get_reference_facial_points, warp_and_crop_face
 from facexlib.detection.retinaface_net import FPN, SSH, MobileNetV1, make_bbox_head, make_class_head, make_landmark_head
@@ -92,7 +93,7 @@ class RetinaFace(nn.Module):
             self.body = IntermediateLayerGetter(backbone, cfg['return_layers'])
         elif cfg['name'] == 'Resnet50':
             import torchvision.models as models
-            backbone = models.resnet50(pretrained=False)
+            backbone = models.resnet50(weights=None)
             self.body = IntermediateLayerGetter(backbone, cfg['return_layers'])
 
         in_channels_stage2 = cfg['in_channel']
@@ -332,35 +333,23 @@ class RetinaFace(nn.Module):
         # index for selection
         b_indice = b_conf > conf_threshold
 
-        # concat
-        b_loc_and_conf = torch.cat((b_loc, b_conf.unsqueeze(-1)), dim=2).float()
+        # ignore low scores
+        b_loc, b_conf, b_landmarks = b_loc[b_indice], b_conf[b_indice], b_landmarks[b_indice]
 
-        for pred, landm, inds in zip(b_loc_and_conf, b_landmarks, b_indice):
+        # make idxs for batched_nms
+        idxs = []
+        [idxs.extend([i]*cnt) for i, cnt in enumerate(b_indice.sum(axis=1))]
+        idxs = torch.tensor(idxs)
 
-            # ignore low scores
-            pred, landm = pred[inds, :], landm[inds, :]
-            if pred.shape[0] == 0:
-                final_bounding_boxes.append(np.array([], dtype=np.float32))
-                final_landmarks.append(np.array([], dtype=np.float32))
-                continue
+        # run nms
+        keep = batched_nms(b_loc, b_conf, idxs, nms_threshold)
+        b_loc, b_conf, idxs, b_landmarks = b_loc[keep, :], b_conf[keep], idxs[keep], b_landmarks[keep, :]
 
-            # sort
-            # order = score.argsort(descending=True)
-            # box, landm, score = box[order], landm[order], score[order]
+        final_bounding_boxes = [[] for _ in range(len(frames))]
+        final_landmarks      = [[] for _ in range(len(frames))]
 
-            # to CPU
-            bounding_boxes, landm = pred.cpu().numpy(), landm.cpu().numpy()
-
-            # NMS
-            keep = py_cpu_nms(bounding_boxes, nms_threshold)
-            bounding_boxes, landmarks = bounding_boxes[keep, :], landm[keep]
-
-            # append
-            final_bounding_boxes.append(bounding_boxes)
-            final_landmarks.append(landmarks)
-        # self.t['forward_pass'].toc(average=True)
-        # self.batch_time += self.t['forward_pass'].diff
-        # self.total_frame += len(frames)
-        # print(self.batch_time / self.total_frame)
+        for loc, conf, idx, landm in zip(b_loc, b_conf, idxs, b_landmarks):
+            final_bounding_boxes[idx].append(torch.cat((loc, conf.unsqueeze(-1))).cpu().numpy())
+            final_landmarks[idx].append(landm.cpu().numpy())
 
         return final_bounding_boxes, final_landmarks
