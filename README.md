@@ -13,7 +13,7 @@
 
 ---
 
-**facexlib** aims at providing ready-to-use **face-related** functions based on current STOA open-source methods. <br>
+**facexlib** aims at providing ready-to-use **face-related** functions based on current SOTA open-source methods. <br>
 Only PyTorch reference codes are available. For training or fine-tuning, please refer to their original repositories listed below. <br>
 Note that we just provide a collection of these algorithms. You need to refer to their original LICENCEs for your intended use.
 
