@@ -139,7 +139,7 @@ class FaceRestoreHelper(object):
             bboxes = self.face_det.detect_faces(input_img, 0.97) * scale
         for bbox in bboxes:
             # remove faces with too small eye distance: side faces or too small faces
-            eye_dist = np.linalg.norm([bbox[6] - bbox[8], bbox[7] - bbox[9]])
+            eye_dist = np.linalg.norm([bbox[5] - bbox[7], bbox[6] - bbox[8]])
             if eye_dist_threshold is not None and (eye_dist < eye_dist_threshold):
                 continue
 
