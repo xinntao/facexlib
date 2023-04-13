@@ -299,6 +299,7 @@ class FaceRestoreHelper(object):
             inverse_affine[:, 2] += extra_offset
             inv_restored = cv2.warpAffine(restored_face, inverse_affine, (w_up, h_up))
 
+            mask = np.ones(self.face_size, dtype=np.float32)
             if self.use_parse:
                 # inference
                 face_input = cv2.resize(restored_face, (512, 512), interpolation=cv2.INTER_LINEAR)
@@ -313,39 +314,25 @@ class FaceRestoreHelper(object):
                 MASK_COLORMAP = [0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 255, 0, 0, 0]
                 for idx, color in enumerate(MASK_COLORMAP):
                     mask[out == idx] = color
-                #  blur the mask
-                mask = cv2.GaussianBlur(mask, (101, 101), 11)
-                mask = cv2.GaussianBlur(mask, (101, 101), 11)
-                # remove the black borders
-                thres = 10
-                mask[:thres, :] = 0
-                mask[-thres:, :] = 0
-                mask[:, :thres] = 0
-                mask[:, -thres:] = 0
                 mask = mask / 255.
+                mask = cv2.resize(mask, restored_face.shape[:2], interpolation=cv2.INTER_NEAREST)
 
-                mask = cv2.resize(mask, restored_face.shape[:2])
-                mask = cv2.warpAffine(mask, inverse_affine, (w_up, h_up), flags=3)
-                inv_soft_mask = mask[:, :, None]
-                pasted_face = inv_restored
+            inv_mask = cv2.warpAffine(mask, inverse_affine, (w_up, h_up), flags=3)
+            # remove the black borders
+            inv_mask_erosion = cv2.erode(
+                inv_mask, np.ones((int(2 * self.upscale_factor), int(2 * self.upscale_factor)), np.uint8))
+            pasted_face = inv_mask_erosion[:, :, None] * inv_restored
+            total_face_area = np.sum(inv_mask_erosion)  # // 3
+            # compute the fusion edge based on the area of face
+            w_edge = int(total_face_area**0.5) // 20
+            erosion_radius = w_edge * 2
+            inv_mask_center = cv2.erode(inv_mask_erosion, np.ones((erosion_radius, erosion_radius), np.uint8))
+            blur_size = w_edge * 2
 
-            else:  # use square parse maps
-                mask = np.ones(self.face_size, dtype=np.float32)
-                inv_mask = cv2.warpAffine(mask, inverse_affine, (w_up, h_up))
-                # remove the black borders
-                inv_mask_erosion = cv2.erode(
-                    inv_mask, np.ones((int(2 * self.upscale_factor), int(2 * self.upscale_factor)), np.uint8))
-                pasted_face = inv_mask_erosion[:, :, None] * inv_restored
-                total_face_area = np.sum(inv_mask_erosion)  # // 3
-                # compute the fusion edge based on the area of face
-                w_edge = int(total_face_area**0.5) // 20
-                erosion_radius = w_edge * 2
-                inv_mask_center = cv2.erode(inv_mask_erosion, np.ones((erosion_radius, erosion_radius), np.uint8))
-                blur_size = w_edge * 2
-                inv_soft_mask = cv2.GaussianBlur(inv_mask_center, (blur_size + 1, blur_size + 1), 0)
-                if len(upsample_img.shape) == 2:  # upsample_img is gray image
-                    upsample_img = upsample_img[:, :, None]
-                inv_soft_mask = inv_soft_mask[:, :, None]
+            inv_soft_mask = cv2.GaussianBlur(inv_mask_center, (blur_size + 1, blur_size + 1), 0)
+            if len(upsample_img.shape) == 2:  # upsample_img is gray image
+                upsample_img = upsample_img[:, :, None]
+            inv_soft_mask = inv_soft_mask[:, :, None]
 
             if len(upsample_img.shape) == 3 and upsample_img.shape[2] == 4:  # alpha channel
                 alpha = upsample_img[:, :, 3:]
