@@ -56,19 +56,19 @@ class AddCoordsTh(nn.Module):
         """
         batch_size_tensor = input_tensor.shape[0]
 
-        xx_ones = torch.ones([1, self.y_dim], dtype=torch.int32).cuda()
+        xx_ones = torch.ones([1, self.y_dim], dtype=torch.int32, device=input_tensor.device)
         xx_ones = xx_ones.unsqueeze(-1)
 
-        xx_range = torch.arange(self.x_dim, dtype=torch.int32).unsqueeze(0).cuda()
+        xx_range = torch.arange(self.x_dim, dtype=torch.int32, device=input_tensor.device).unsqueeze(0)
         xx_range = xx_range.unsqueeze(1)
 
         xx_channel = torch.matmul(xx_ones.float(), xx_range.float())
         xx_channel = xx_channel.unsqueeze(-1)
 
-        yy_ones = torch.ones([1, self.x_dim], dtype=torch.int32).cuda()
+        yy_ones = torch.ones([1, self.x_dim], dtype=torch.int32, device=input_tensor.device)
         yy_ones = yy_ones.unsqueeze(1)
 
-        yy_range = torch.arange(self.y_dim, dtype=torch.int32).unsqueeze(0).cuda()
+        yy_range = torch.arange(self.y_dim, dtype=torch.int32, device=input_tensor.device).unsqueeze(0)
         yy_range = yy_range.unsqueeze(-1)
 
         yy_channel = torch.matmul(yy_range.float(), yy_ones.float())
@@ -93,8 +93,8 @@ class AddCoordsTh(nn.Module):
             xx_boundary_channel = torch.where(boundary_channel > 0.05, xx_channel, zero_tensor)
             yy_boundary_channel = torch.where(boundary_channel > 0.05, yy_channel, zero_tensor)
         if self.with_boundary and heatmap is not None:
-            xx_boundary_channel = xx_boundary_channel.cuda()
-            yy_boundary_channel = yy_boundary_channel.cuda()
+            xx_boundary_channel = xx_boundary_channel.to(input_tensor.device)
+            yy_boundary_channel = yy_boundary_channel.to(input_tensor.device)
         ret = torch.cat([input_tensor, xx_channel, yy_channel], dim=1)
 
         if self.with_r:
@@ -268,8 +268,9 @@ class HourGlass(nn.Module):
 
 class FAN(nn.Module):
 
-    def __init__(self, num_modules=1, end_relu=False, gray_scale=False, num_landmarks=68):
+    def __init__(self, num_modules=1, end_relu=False, gray_scale=False, num_landmarks=68, device='cuda'):
         super(FAN, self).__init__()
+        self.device = device
         self.num_modules = num_modules
         self.gray_scale = gray_scale
         self.end_relu = end_relu
@@ -355,14 +356,14 @@ class FAN(nn.Module):
 
         return outputs, boundary_channels
 
-    def get_landmarks(self, img, device='cuda'):
+    def get_landmarks(self, img):
         H, W, _ = img.shape
         offset = W / 64, H / 64, 0, 0
 
         img = cv2.resize(img, (256, 256))
         inp = img[..., ::-1]
         inp = torch.from_numpy(np.ascontiguousarray(inp.transpose((2, 0, 1)))).float()
-        inp = inp.to(device)
+        inp = inp.to(self.device)
         inp.div_(255.0).unsqueeze_(0)
 
         outputs, _ = self.forward(inp)

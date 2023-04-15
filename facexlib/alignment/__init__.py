@@ -9,7 +9,7 @@ __all__ = ['FAN', 'landmark_98_to_68']
 
 def init_alignment_model(model_name, half=False, device='cuda', model_rootpath=None):
     if model_name == 'awing_fan':
-        model = FAN(num_modules=4, num_landmarks=98)
+        model = FAN(num_modules=4, num_landmarks=98, device=device)
         model_url = 'https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_WFLW_4HG.pth'
     else:
         raise NotImplementedError(f'{model_name} is not implemented.')
