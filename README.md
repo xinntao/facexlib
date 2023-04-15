@@ -7,9 +7,8 @@
 [![LICENSE](https://img.shields.io/github/license/xinntao/facexlib.svg)](https://github.com/xinntao/facexlib/blob/master/LICENSE)
 [![python lint](https://github.com/xinntao/facexlib/actions/workflows/pylint.yml/badge.svg)](https://github.com/xinntao/facexlib/blob/master/.github/workflows/pylint.yml)
 [![Publish-pip](https://github.com/xinntao/facexlib/actions/workflows/publish-pip.yml/badge.svg)](https://github.com/xinntao/facexlib/blob/master/.github/workflows/publish-pip.yml)
-[![gitee mirror](https://github.com/xinntao/facexlib/actions/workflows/gitee-mirror.yml/badge.svg)](https://github.com/xinntao/facexlib/blob/master/.github/workflows/gitee-mirror.yml)
 
-[English](README.md) **|** [简体中文](README_CN.md) &emsp; [GitHub](https://github.com/xinntao/facexlib) **|** [Gitee码云](https://gitee.com/xinntao/facexlib)
+[English](README.md) **|** [简体中文](README_CN.md)
 
 ---
 

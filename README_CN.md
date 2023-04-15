@@ -1,6 +1,6 @@
 # ![icon](assets/icon_small.png) FaceXLib
 
-[English](README.md) **|** [简体中文](README_CN.md) &emsp; [GitHub](https://github.com/xinntao/facexlib) **|** [Gitee码云](https://gitee.com/xinntao/facexlib)
+[English](README.md) **|** [简体中文](README_CN.md)
 
 ---
 
